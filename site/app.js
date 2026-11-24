@@ -214,10 +214,8 @@ async function loadCatalog() {
 
     const refreshed = document.querySelector('#refreshed');
     refreshed.dateTime = snapshot.refreshed_at;
-    refreshed.textContent = new Intl.DateTimeFormat('en-GB', {dateStyle: 'medium'})
+    refreshed.textContent = new Intl.DateTimeFormat('en-GB', {dateStyle: 'medium', timeZone: 'UTC'})
       .format(new Date(snapshot.refreshed_at));
-    document.querySelector('#coverage').textContent =
-      `Profession data for ${snapshot.coverage.profiles_available} of ${snapshot.coverage.roster} guild characters`;
     document.querySelector('footer').hidden = false;
     query.disabled = false;
     showLocation();

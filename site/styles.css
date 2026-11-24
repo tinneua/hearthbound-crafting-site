@@ -13,10 +13,9 @@ header { border-bottom:1px solid var(--soft); }
 .top, main, footer { width:min(1112px, calc(100% - 96px)); margin-inline:auto; }
 .top { min-height:72px; display:flex; align-items:center; justify-content:space-between; gap:16px; }
 .brand { display:flex; align-items:center; gap:11px; font-weight:650; font-size:17px; }
-.mark {
-  width:34px; height:34px; display:grid; place-items:center; border-radius:9px;
-  color:var(--accent); background:var(--mark); border:1px solid var(--stroke); font-size:19px;
-}
+.mark { flex: none; display: block; width: 38px; height: 38px; }
+.header-meta { display: flex; flex-wrap: wrap; align-items: center; justify-content: flex-end; gap: 5px 16px; }
+.header-meta span + span { border-inline-start: 1px solid var(--stroke); padding-inline-start: 16px; }
 .meta { color:var(--muted); font-size:13px; }
 .intro { margin:45px 0 26px; }
 .intro h1 {
@@ -75,7 +74,11 @@ footer {
 }
 @media (max-width:750px) {
   .top, main, footer { width:calc(100% - 36px); }
-  .top { min-height:62px; }
+  .top { min-height: 64px; padding-block: 9px; gap: 10px; }
+  .brand { gap: 9px; font-size: 15px; }
+  .mark { width: 34px; height: 34px; }
+  .header-meta { display: grid; justify-items: end; gap: 1px; text-align: end; font-size: 12px; }
+  .header-meta span + span { border: 0; padding: 0; }
   .intro { margin:26px 0 17px; }
   .intro p { font-size:14px; }
   .search { margin-bottom:14px; min-height:49px; font-size:16px; }
@@ -140,5 +143,5 @@ button:focus-visible, a:focus-visible { outline: 2px solid var(--accent); outlin
 }
 @media (max-width: 370px) {
   .brand { font-size: 15px; }
-  .top .meta { text-align: right; }
+  .mark { width: 34px; height: 34px; }
 }

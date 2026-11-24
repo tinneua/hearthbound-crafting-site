@@ -5,6 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <meta name="description" content="Find Hearthbound guild crafters and materials for WoW Forever recipes.">
   <title>Hearthbound Crafting</title>
+  <link rel="icon" type="image/png" href="hearthbound-mark.png">
   <link rel="stylesheet" href="styles.css">
   <script>window.whTooltips = {colorLinks: false, iconizeLinks: true, renameLinks: false, iconSize: 'tiny'};</script>
   <script src="https://wow.zamimg.com/js/tooltips.js" async></script>
@@ -13,8 +14,14 @@
 <body class="ledger">
   <header>
     <div class="top">
-      <div class="brand"><span class="mark" aria-hidden="true">✦</span> Hearthbound Crafting</div>
-      <div class="meta">EU Roleplay · Horde</div>
+      <div class="brand">
+        <img class="mark" src="hearthbound-mark.png" width="38" height="38" alt="">
+        <span>Hearthbound Crafting</span>
+      </div>
+      <div class="header-meta meta">
+        <span>EU Roleplay · Horde</span>
+        <span>Unofficial private project</span>
+      </div>
     </div>
   </header>
   <main>
@@ -61,8 +68,7 @@
     </div>
   </main>
   <footer class="meta" hidden>
-    <span>Catalog refreshed <time id="refreshed"></time></span>
-    <span id="coverage"></span>
+    <span>Catalog updates daily · Data as of <time id="refreshed"></time></span>
   </footer>
 </body>
 </html>
