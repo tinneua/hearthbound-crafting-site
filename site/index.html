@@ -1,0 +1,68 @@
+<!doctype html>
+<html lang="en-GB">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="description" content="Find Hearthbound guild crafters and materials for WoW Forever recipes.">
+  <title>Hearthbound Crafting</title>
+  <link rel="stylesheet" href="styles.css">
+  <script>window.whTooltips = {colorLinks: false, iconizeLinks: true, renameLinks: false, iconSize: 'tiny'};</script>
+  <script src="https://wow.zamimg.com/js/tooltips.js" async></script>
+  <script src="app.js" type="module"></script>
+</head>
+<body class="ledger">
+  <header>
+    <div class="top">
+      <div class="brand"><span class="mark" aria-hidden="true">✦</span> Hearthbound Crafting</div>
+      <div class="meta">EU Roleplay · Horde</div>
+    </div>
+  </header>
+  <main>
+    <div class="intro">
+      <h1>Find a guild crafter</h1>
+      <p>Search for an item or recipe to see who can make it and what you’ll need.</p>
+    </div>
+
+    <form class="search" role="search">
+      <label class="visually-hidden" for="query">Search for an item or recipe</label>
+      <span class="search-icon" aria-hidden="true"></span>
+      <input id="query" class="query" type="text" placeholder="Search items and recipes" autocomplete="off" disabled>
+      <button id="clear" class="clear" type="button" aria-label="Clear search" hidden>×</button>
+    </form>
+    <p id="status" class="status" role="status">Loading the crafting catalog…</p>
+
+    <div class="workspace" hidden>
+      <section class="panel results" aria-labelledby="match-count">
+        <h2 id="match-count" aria-live="polite"></h2>
+        <div id="results" class="result-list"></div>
+      </section>
+      <section class="panel details" aria-labelledby="recipe-title">
+        <div class="details-header">
+          <div id="profession" class="profession"></div>
+          <div class="title-line">
+            <h2 id="recipe-title" tabindex="-1"></h2>
+            <button id="copy-link" class="share" type="button">Copy recipe link</button>
+          </div>
+          <p id="copy-status" class="copy-status" role="status"></p>
+        </div>
+        <div class="detail-grid">
+          <section class="group" aria-labelledby="crafters-heading">
+            <h3 id="crafters-heading">Known crafters <span id="crafter-count"></span></h3>
+            <ul id="crafters"></ul>
+            <button id="show-crafters" class="more" type="button" aria-controls="crafters" aria-expanded="false" hidden></button>
+          </section>
+          <section class="group" aria-labelledby="materials-heading">
+            <h3 id="materials-heading">Materials per craft</h3>
+            <ul id="materials"></ul>
+            <p id="materials-status" class="message" hidden></p>
+          </section>
+        </div>
+      </section>
+    </div>
+  </main>
+  <footer class="meta" hidden>
+    <span>Catalog refreshed <time id="refreshed"></time></span>
+    <span id="coverage"></span>
+  </footer>
+</body>
+</html>

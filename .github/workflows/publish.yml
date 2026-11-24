@@ -1,0 +1,91 @@
+name: Publish Hearthbound Guild Ledger
+
+on:
+  workflow_dispatch:
+  schedule:
+    - cron: "23 6 * * *"
+
+permissions:
+  contents: read
+
+concurrency:
+  group: hearthbound-pages
+  cancel-in-progress: false
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    outputs:
+      deploy: ${{ steps.catalog.outputs.deploy }}
+    steps:
+      - uses: actions/checkout@v6
+      - uses: actions/setup-python@v6
+        with:
+          python-version: "3.14"
+      - name: Stage site files
+        run: |
+          mkdir -p "$RUNNER_TEMP/hearthbound-site"
+          cp site/index.html site/app.js site/styles.css "$RUNNER_TEMP/hearthbound-site/"
+      - name: Generate the live catalog
+        id: refresh
+        continue-on-error: true
+        env:
+          BLIZZARD_CLIENT_ID: ${{ secrets.BLIZZARD_CLIENT_ID }}
+          BLIZZARD_CLIENT_SECRET: ${{ secrets.BLIZZARD_CLIENT_SECRET }}
+        run: python refresh.py --output "$RUNNER_TEMP/hearthbound-site/catalog.json"
+      - name: Decide whether to replace the site
+        id: catalog
+        env:
+          REFRESH_OUTCOME: ${{ steps.refresh.outcome }}
+          SITE_URL: https://tinneua.github.io/hearthbound-crafting-site/
+        run: |
+          python - <<'PY'
+          from datetime import datetime, timezone
+          import json
+          import os
+          from urllib.error import HTTPError, URLError
+          from urllib.request import urlopen
+
+          deploy = os.environ["REFRESH_OUTCOME"] == "success"
+          if not deploy:
+              url = os.environ["SITE_URL"].rstrip("/")
+              if not url.startswith("https://"):
+                  raise SystemExit("Specify the HTTPS production URL in HEARTHBOUND_SITE_URL.")
+              try:
+                  with urlopen(f"{url}/catalog.json", timeout=15) as response:
+                      snapshot = json.load(response)
+                  expires_at = datetime.fromisoformat(snapshot["expires_at"])
+                  deploy = expires_at <= datetime.now(timezone.utc)
+              except HTTPError as error:
+                  if error.code != 404:
+                      raise
+              except (URLError, ValueError, KeyError, TypeError) as error:
+                  raise SystemExit(f"Could not verify the published catalog's expiry: {error}")
+          with open(os.environ["GITHUB_OUTPUT"], "a", encoding="utf-8") as output:
+              print(f"deploy={str(deploy).lower()}", file=output)
+          PY
+      - uses: actions/upload-pages-artifact@v4
+        if: steps.catalog.outputs.deploy == 'true'
+        with:
+          path: ${{ runner.temp }}/hearthbound-site
+          retention-days: 1
+      - name: Report a failed catalog refresh
+        if: steps.refresh.outcome == 'failure' && steps.catalog.outputs.deploy != 'true'
+        run: |
+          echo "::error::Catalog refresh failed. The current deployment is unchanged."
+          exit 1
+
+  deploy:
+    if: needs.build.outputs.deploy == 'true'
+    needs: build
+    permissions:
+      pages: write
+      id-token: write
+    runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+      url: ${{ steps.pages.outputs.page_url }}
+    steps:
+      - id: pages
+        uses: actions/deploy-pages@v4
