@@ -3,7 +3,7 @@ name: Publish Hearthbound Guild Ledger
 on:
   workflow_dispatch:
   schedule:
-    - cron: "23 6 * * *"
+    - cron: "0 4 * * *" # 05:00 CET (UTC+1)
 
 permissions:
   contents: read
